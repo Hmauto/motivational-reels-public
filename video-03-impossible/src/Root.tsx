@@ -17,10 +17,10 @@ const AUDIO_STARTS = {
 const TOTAL_FRAMES = Object.values(DURATIONS).reduce((a, b) => a + b, 0);
 
 export const Root: React.FC = () => (
-  <Composition id="ImpossibleIsNothing" component={ImpossibleIsNothing} durationInFrames={TOTAL_FRAMES} width={1080} height={1920} fps={30} />
+  <Composition id="ImpossibleIsNothing" component={Video} durationInFrames={TOTAL_FRAMES} width={1080} height={1920} fps={30} />
 );
 
-const ImpossibleIsNothing: React.FC = () => (
+const Video: React.FC = () => (
   <>
     <Series>
       <Series.Sequence durationInFrames={DURATIONS.s1}><Scene1 /></Series.Sequence>

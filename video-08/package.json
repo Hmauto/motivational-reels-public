@@ -1,0 +1,18 @@
+{
+  "name": "video-08-giant",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "remotion render src/index.tsx AwakenTheGiant out/AwakenTheGiant.mp4",
+    "preview": "remotion preview src/index.tsx"
+  },
+  "dependencies": {
+    "remotion": "^4.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@remotion/cli": "^4.0.0",
+    "typescript": "^5.0.0"
+  }
+}

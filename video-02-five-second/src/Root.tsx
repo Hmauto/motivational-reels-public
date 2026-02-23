@@ -17,10 +17,10 @@ const AUDIO_STARTS = {
 const TOTAL_FRAMES = Object.values(DURATIONS).reduce((a, b) => a + b, 0);
 
 export const Root: React.FC = () => (
-  <Composition id="FiveSecondRule" component={FiveSecondRule} durationInFrames={TOTAL_FRAMES} width={1080} height={1920} fps={30} />
+  <Composition id="FiveSecondRule" component={Video} durationInFrames={TOTAL_FRAMES} width={1080} height={1920} fps={30} />
 );
 
-const FiveSecondRule: React.FC = () => (
+const Video: React.FC = () => (
   <>
     <Series>
       <Series.Sequence durationInFrames={DURATIONS.s1}><Scene1 /></Series.Sequence>
