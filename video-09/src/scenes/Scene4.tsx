@@ -1,51 +1,140 @@
 import React from 'react';
-import {useCurrentFrame, useVideoConfig, spring, interpolate} from 'remotion';
-import {AbsoluteFill} from 'remotion';
+import {useCurrentFrame, interpolate, AbsoluteFill, staticFile, Audio} from 'remotion';
 
 export const Scene4: React.FC = () => {
   const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
-  
-  const textReveal = spring({fps, frame: frame - 5, config: {damping: 150}});
-  const whiteGlow = interpolate(frame % 25, [0, 12, 25], [0.4, 1, 0.4]);
-  
+  const progress = interpolate(frame, [0, 60], [0, 1], {
+    extrapolateRight: 'clamp',
+  });
+  const opacity = interpolate(frame, [60, 90], [1, 0], {
+    extrapolateLeft: 'clamp',
+  });
+
+  const pulseProgress = (frame % 30) / 30;
+  const pulseScale = 1 + Math.sin(pulseProgress * Math.PI * 2) * 0.1;
+
   return (
-    <AbsoluteFill style={{
-      background: 'linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%)',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      overflow: 'hidden',
-    }}>
-      <div style={{
-        position: 'absolute',
-        width: 800,
-        height: 800,
-        borderRadius: '50%',
-        background: \`radial-gradient(circle, rgba(255,215,0,\${0.2 * whiteGlow}), transparent 70%)\`,
-        filter: 'blur(100px)',
-      }} />
+    <AbsoluteFill
+      style={{
+        backgroundColor: '#ffffff',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity,
+      }}
+    >
+      <Audio src={staticFile('voice-4.mp3')} />
       
-      {[...Array(8)].map((_, i) => (
-        <div key={i} style={{
-          position: 'absolute',
-          width: 2,
-          height: 700,
-          background: \`linear-gradient(180deg, transparent, rgba(255,255,255,\${0.3 * whiteGlow}), transparent)\`,
-          transform: \`rotate(\${frame * 0.3 + i * 45}deg)\`,
-        }} />
-      ))}
-      
-      <div style={{
-        fontSize: 72,
-        fontWeight: 900,
-        color: '#fff',
-        textAlign: 'center',
-        opacity: textReveal,
-        textShadow: \`0 0 60px rgba(255,255,255,\${0.6 * whiteGlow})\`,
-      }}>
-        Scene 4
+      {/* Heart and Lion Container */}
+      <div
+        style={{
+          position: 'relative',
+          width: 200,
+          height: 150,
+          marginBottom: 50,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {/* Heart */}
+        <div
+          style={{
+            position: 'relative',
+            width: 80,
+            height: 70,
+            transform: `scale(${pulseScale})`,
+            opacity: interpolate(progress, [0, 0.3], [0, 1]),
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              width: 40,
+              height: 60,
+              backgroundColor: '#000000',
+              borderRadius: '40px 40px 0 0',
+              transform: 'rotate(-45deg)',
+              left: 20,
+              boxShadow: '0 0 30px rgba(0,0,0,0.15)',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              width: 40,
+              height: 60,
+              backgroundColor: '#000000',
+              borderRadius: '40px 40px 0 0',
+              transform: 'rotate(45deg)',
+              left: 32,
+              boxShadow: '0 0 30px rgba(0,0,0,0.15)',
+            }}
+          />
+          
+          {/* Pulse lines */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: `translate(-50%, -50%) scale(${1 + pulseProgress * 0.5})`,
+              width: 100,
+              height: 100,
+              border: '2px solid rgba(0,0,0,0.1)',
+              borderRadius: '50%',
+              opacity: 1 - pulseProgress,
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: `translate(-50%, -50%) scale(${1 + (pulseProgress > 0.5 ? (pulseProgress - 0.5) * 2 : 0) * 0.5})`,
+              width: 100,
+              height: 100,
+              border: '2px solid rgba(0,0,0,0.08)',
+              borderRadius: '50%',
+              opacity: pulseProgress > 0.5 ? 1 - (pulseProgress - 0.5) * 2 : 0,
+            }}
+          />
+        </div>
+
+        {/* Lion - Courage symbol */}
+        <div
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: '50%',
+            transform: `translateY(-50%) translateX(${interpolate(progress, [0.3, 0.6], [50, 0])}px)`,
+            opacity: interpolate(progress, [0.3, 0.6], [0, 1]),
+            fontSize: 60,
+          }}
+        >
+          🦁
+        </div>
+      </div>
+
+      <div
+        style={{
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif',
+          fontSize: 40,
+          fontWeight: 300,
+          color: '#000000',
+          textAlign: 'center',
+          lineHeight: 1.4,
+          letterSpacing: '-0.02em',
+          maxWidth: 800,
+          padding: '0 40px',
+          opacity: interpolate(progress, [0.1, 0.4], [0, 1]),
+          transform: `translateY(${interpolate(progress, [0.1, 0.4], [20, 0])}px)`,
+        }}
+      >
+        Have the courage
+        <br />
+        to follow your heart.
       </div>
     </AbsoluteFill>
   );

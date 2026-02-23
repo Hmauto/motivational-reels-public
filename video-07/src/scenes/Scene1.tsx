@@ -1,51 +1,72 @@
 import React from 'react';
-import {useCurrentFrame, useVideoConfig, spring, interpolate} from 'remotion';
-import {AbsoluteFill} from 'remotion';
+import {useCurrentFrame, interpolate, AbsoluteFill, staticFile, Audio} from 'remotion';
 
 export const Scene1: React.FC = () => {
   const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
-  
-  const textReveal = spring({fps, frame: frame - 5, config: {damping: 150}});
-  const whiteGlow = interpolate(frame % 25, [0, 12, 25], [0.4, 1, 0.4]);
-  
+  const progress = interpolate(frame, [0, 60], [0, 1], {
+    extrapolateRight: 'clamp',
+  });
+  const opacity = interpolate(frame, [60, 90], [1, 0], {
+    extrapolateLeft: 'clamp',
+  });
+
   return (
-    <AbsoluteFill style={{
-      background: 'linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%)',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      overflow: 'hidden',
-    }}>
-      <div style={{
-        position: 'absolute',
-        width: 800,
-        height: 800,
-        borderRadius: '50%',
-        background: \`radial-gradient(circle, rgba(255,215,0,\${0.2 * whiteGlow}), transparent 70%)\`,
-        filter: 'blur(100px)',
-      }} />
-      
-      {[...Array(8)].map((_, i) => (
-        <div key={i} style={{
-          position: 'absolute',
-          width: 2,
-          height: 700,
-          background: \`linear-gradient(180deg, transparent, rgba(255,255,255,\${0.3 * whiteGlow}), transparent)\`,
-          transform: \`rotate(\${frame * 0.3 + i * 45}deg)\`,
-        }} />
-      ))}
-      
-      <div style={{
-        fontSize: 72,
-        fontWeight: 900,
-        color: '#fff',
-        textAlign: 'center',
-        opacity: textReveal,
-        textShadow: \`0 0 60px rgba(255,255,255,\${0.6 * whiteGlow})\`,
-      }}>
-        Scene 1
+    <AbsoluteFill
+      style={{
+        backgroundColor: '#ffffff',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        opacity,
+      }}
+    >
+      <Audio src={staticFile('voice-1.mp3')} />
+      <div
+        style={{
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif',
+          fontSize: 72,
+          fontWeight: 300,
+          color: '#000000',
+          textAlign: 'center',
+          lineHeight: 1.3,
+          letterSpacing: '-0.02em',
+          opacity: interpolate(progress, [0, 0.3], [0, 1]),
+          transform: `translateY(${interpolate(progress, [0, 0.3], [30, 0])}px)`,
+          textShadow: '0 0 60px rgba(0,0,0,0.08)',
+        }}
+      >
+        Stay hungry.
+      </div>
+      <div
+        style={{
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif',
+          fontSize: 72,
+          fontWeight: 300,
+          color: '#000000',
+          textAlign: 'center',
+          lineHeight: 1.3,
+          letterSpacing: '-0.02em',
+          marginTop: 20,
+          opacity: interpolate(progress, [0.2, 0.5], [0, 1]),
+          transform: `translateY(${interpolate(progress, [0.2, 0.5], [30, 0])}px)`,
+          textShadow: '0 0 60px rgba(0,0,0,0.08)',
+        }}
+      >
+        Stay foolish.
+      </div>
+      <div
+        style={{
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif',
+          fontSize: 24,
+          fontWeight: 400,
+          color: '#1e3a5f',
+          marginTop: 60,
+          letterSpacing: '0.1em',
+          opacity: interpolate(progress, [0.4, 0.7], [0, 1]),
+        }}
+      >
+        — Steve Jobs
       </div>
     </AbsoluteFill>
   );

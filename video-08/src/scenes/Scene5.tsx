@@ -1,51 +1,129 @@
 import React from 'react';
-import {useCurrentFrame, useVideoConfig, spring, interpolate} from 'remotion';
-import {AbsoluteFill} from 'remotion';
+import {useCurrentFrame, interpolate, AbsoluteFill, staticFile, Audio} from 'remotion';
 
 export const Scene5: React.FC = () => {
   const frame = useCurrentFrame();
-  const {fps} = useVideoConfig();
-  
-  const textReveal = spring({fps, frame: frame - 5, config: {damping: 150}});
-  const whiteGlow = interpolate(frame % 25, [0, 12, 25], [0.4, 1, 0.4]);
-  
+  const progress = interpolate(frame, [0, 60], [0, 1], {
+    extrapolateRight: 'clamp',
+  });
+
+  const stampProgress = interpolate(frame, [30, 70], [0, 1], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+
+  const checkScale = interpolate(stampProgress, [0, 0.3, 0.5], [0, 1.2, 1], {
+    extrapolateRight: 'clamp',
+  });
+
   return (
-    <AbsoluteFill style={{
-      background: 'linear-gradient(180deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%)',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      overflow: 'hidden',
-    }}>
-      <div style={{
-        position: 'absolute',
-        width: 800,
-        height: 800,
-        borderRadius: '50%',
-        background: \`radial-gradient(circle, rgba(255,215,0,\${0.2 * whiteGlow}), transparent 70%)\`,
-        filter: 'blur(100px)',
-      }} />
+    <AbsoluteFill
+      style={{
+        backgroundColor: '#ffffff',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <Audio src={staticFile('voice-5.mp3')} />
       
-      {[...Array(8)].map((_, i) => (
-        <div key={i} style={{
-          position: 'absolute',
-          width: 2,
-          height: 700,
-          background: \`linear-gradient(180deg, transparent, rgba(255,255,255,\${0.3 * whiteGlow}), transparent)\`,
-          transform: \`rotate(\${frame * 0.3 + i * 45}deg)\`,
-        }} />
-      ))}
+      {/* Checkmark and Success Stamp */}
+      <div
+        style={{
+          position: 'relative',
+          width: 150,
+          height: 150,
+          marginBottom: 50,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {/* Circle background */}
+        <div
+          style={{
+            position: 'absolute',
+            width: 120,
+            height: 120,
+            borderRadius: '50%',
+            border: '4px solid #000000',
+            opacity: interpolate(progress, [0, 0.3], [0, 1]),
+            transform: `scale(${interpolate(progress, [0, 0.3], [0.8, 1])})`,
+            boxShadow: '0 0 40px rgba(0,0,0,0.1)',
+          }}
+        />
+        
+        {/* Checkmark */}
+        <svg
+          width={60}
+          height={50}
+          viewBox="0 0 60 50"
+          style={{
+            position: 'absolute',
+            transform: `scale(${checkScale})`,
+            opacity: stampProgress > 0 ? 1 : 0,
+          }}
+        >
+          <path
+            d="M5 25 L20 40 L55 5"
+            fill="none"
+            stroke="#000000"
+            strokeWidth={6}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{
+              strokeDasharray: 100,
+              strokeDashoffset: interpolate(stampProgress, [0, 1], [100, 0]),
+            }}
+          />
+        </svg>
+        
+        {/* Success stamp ring effect */}
+        <div
+          style={{
+            position: 'absolute',
+            width: 120,
+            height: 120,
+            borderRadius: '50%',
+            border: '2px solid rgba(0,0,0,0.1)',
+            transform: `scale(${interpolate(stampProgress, [0.3, 1], [1, 1.3])})`,
+            opacity: interpolate(stampProgress, [0.3, 1], [0.5, 0]),
+          }}
+        />
+      </div>
+
+      <div
+        style={{
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif',
+          fontSize: 48,
+          fontWeight: 300,
+          color: '#000000',
+          textAlign: 'center',
+          lineHeight: 1.3,
+          letterSpacing: '-0.02em',
+          opacity: interpolate(progress, [0.2, 0.5], [0, 1]),
+          transform: `translateY(${interpolate(progress, [0.2, 0.5], [20, 0])}px)`,
+        }}
+      >
+        Everything else
+        <br />
+        is secondary.
+      </div>
       
-      <div style={{
-        fontSize: 72,
-        fontWeight: 900,
-        color: '#fff',
-        textAlign: 'center',
-        opacity: textReveal,
-        textShadow: \`0 0 60px rgba(255,255,255,\${0.6 * whiteGlow})\`,
-      }}>
-        Scene 5
+      {/* Final attribution */}
+      <div
+        style={{
+          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif',
+          fontSize: 20,
+          fontWeight: 400,
+          color: '#ff4500',
+          marginTop: 60,
+          letterSpacing: '0.15em',
+          opacity: interpolate(progress, [0.5, 0.8], [0, 1]),
+        }}
+      >
+        STAY HUNGRY · STAY FOOLISH
       </div>
     </AbsoluteFill>
   );

@@ -1,17 +1,21 @@
 {
-  "name": "motivational-reel",
+  "name": "video-07",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "remotion render src/index.tsx DisciplineEqualsFreedom out/DisciplineEqualsFreedom.mp4"
+    "build": "remotion render src/index.tsx Main out/video-07.mp4",
+    "dev": "remotion preview src/index.tsx"
   },
   "dependencies": {
-    "remotion": "^4.0.0",
+    "@remotion/cli": "^4.0.0",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react-dom": "^18.0.0",
+    "remotion": "^4.0.0"
   },
   "devDependencies": {
-    "@remotion/cli": "^4.0.0",
+    "@types/react": "^18.0.0",
+    "@types/node": "^20.0.0",
     "typescript": "^5.0.0"
   }
 }
